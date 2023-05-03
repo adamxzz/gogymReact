@@ -15,11 +15,8 @@ const ViewHabit = () => {
     const [habits,
         setHabits] = useState([]);
 
-        const handleDelete = (e) => {
-            e.preventDefault();
-    
-            axios.delete('http://localhost/api/habits/${habit.id}', {
-            }, {
+        const handleDelete = (id) => {
+            axios.delete(`http://localhost/api/habits/${id}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
@@ -27,9 +24,11 @@ const ViewHabit = () => {
                 }
             }).then(response => {
                 console.log(response.data);
+                // Remove the deleted habit from the list of habits
+                setHabits(habits.filter(habit => habit.id !== id));
             }).catch(function (error) {
                 console.log(error);
-                });
+            });
         }
     
     useEffect(() => {
@@ -59,10 +58,10 @@ const ViewHabit = () => {
                 }}>
                     <Card.Body>
                         <Card.Title>{habit.name}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
+                        <Card.Subtitle className="mb-2 text-muted">{habit.type}</Card.Subtitle>
                         <Card.Text>{habit.description}</Card.Text>
                         <Button as={Link} to={`/UpdateHabit/${habit.id}`} variant="primary" type="submit">update</Button> _
-                        <Button variant="danger" type="submit" onClick={handleDelete}>delete</Button>
+                        <Button variant="danger" type="submit" onClick={() => handleDelete(habit.id)}>delete</Button>
                     </Card.Body>
                 </Card>
             </Col>
@@ -71,6 +70,15 @@ const ViewHabit = () => {
 
     return (
         <Container>
+            <Row className='py-3'>
+                <Col>
+                    <Button as={Link} to={`/`} variant="success">Back</Button>
+                </Col>
+                <Col>
+                    <h3 className='text-center'>Your Habits</h3>
+                </Col>
+                <Col></Col>
+            </Row>
             <Row>
                 {myHabits}
             </Row>

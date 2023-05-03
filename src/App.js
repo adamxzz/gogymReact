@@ -13,6 +13,7 @@ import CreateHabit from './pages/CreateHabit'
 import ViewHabit from './pages/ViewHabit';
 import UpdateHabit from './pages/UpdateHabit';
 import ViewWorkout from './pages/ViewWorkout'
+import UpdateWorkout from './pages/UpdateWorkout'
 import Graph from './pages/Graph'
 
 // import components
@@ -58,6 +59,7 @@ const App = () => {
         <Route path="ViewHabit" element={<ViewHabit />} />
         <Route path="UpdateHabit/:id" element={<UpdateHabit />} />
         <Route path="ViewWorkout" element={<ViewWorkout />} />
+        <Route path="UpdateWorkout/:id" element={<UpdateWorkout />} />
         <Route path="Graph" element={<Graph />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>

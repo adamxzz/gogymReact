@@ -1,6 +1,9 @@
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 
@@ -8,10 +11,6 @@ import '../App.css';
 import {Link} from 'react-router-dom'
 
 const NavBar = (props) => {
-    // const [name,     setName] = useState(null); useEffect(() => {     // Check if
-    // user's name is stored in state or local storage     const storedName =
-    // localStorage.getItem('name');     if (storedName) {
-    // setName(storedName);     } }, []);
 
     const handleLogout = () => {
         // Clear the user's name from state or local storage setName(null);
@@ -37,8 +36,10 @@ const NavBar = (props) => {
                         )
                         : (
                             <ul>
-                                <Link to="/login">Login</Link>
-                                <Link to="register">Register</Link>
+                                <ButtonGroup>
+                                    <Button as={Link} to={`/login`} variant="success">Login</Button> |
+                                    <Button as={Link} to={`/register`} variant="success">Register</Button>
+                                </ButtonGroup>
                             </ul>
 
                         )}

@@ -7,11 +7,11 @@ import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 
-import {Link, useLocation, useNavigate} from 'react-router-dom'
-import {useState} from "react";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useState, useEffect} from "react";
 import axios from 'axios';
 
-const CreateWorkout = () => {
+const UpdateWorkout = () => {
 
     const [date,
         setDate] = useState('');
@@ -27,14 +27,51 @@ const CreateWorkout = () => {
         setDuration] = useState('');
     const [comment,
         setComment] = useState('');
+    const [workout,
+        setWorkout] = useState({
+        date: '',
+        workouttype: '',
+        sets: '',
+        reps: '',
+        weight: '',
+        duration: '',
+        comment: ''
+    });
 
     const navigate = useNavigate(); // Get the history object from React Router
     const token = localStorage.getItem('token'); // Retrieve the token from local storage
 
+    const {id} = useParams();
+
+    useEffect(() => {
+        axios
+            .get(`http://localhost/api/workouts/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                console.log(response.data)
+                setWorkout(response.data.data);
+                setDate(response.data.data.dates)
+                setWorkouttype(response.data.data.workouttype)
+                setSets(response.data.data.sets)
+                setReps(response.data.data.reps)
+                setWeight(response.data.data.weight)
+                setDuration(response.data.data.duration)
+                setComment(response.data.data.comment)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }, []);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(date, workouttype, sets, reps, weight, duration, comment);
-        axios.post('http://localhost/api/workouts/', {
+        axios.put(`http://localhost/api/workouts/${id}`, {
             // Data to be sent to the server
             dates: date,
             workouttype: workouttype,
@@ -42,8 +79,7 @@ const CreateWorkout = () => {
             reps: reps,
             weight: weight,
             duration: duration,
-            comment: comment,
-            user_id: '1'
+            comment: comment
         }, {
             headers: {
                 'Content-Type': 'application/json',
@@ -52,7 +88,7 @@ const CreateWorkout = () => {
             }
         }).then(response => {
             console.log(response.data);
-            navigate('/ViewWorkouts');
+            navigate('/ViewWorkout');
         })
             .catch(function (error) {
                 console.log(error);
@@ -65,12 +101,8 @@ const CreateWorkout = () => {
         <Container className='py-3'>
             <Row className='py-3'>
                 <Col>
-                    <Button as={Link} to={`/`} variant="success">Back</Button>
+                    <h3 className='text-center'>Update a Workout</h3>
                 </Col>
-                <Col>
-                    <h3 className='text-center'>Create a Workout</h3>
-                </Col>
-                <Col></Col>
             </Row>
             <Row className="justify-content-md-center">
                 <Col xs lg="6">
@@ -80,13 +112,14 @@ const CreateWorkout = () => {
                                 type="date"
                                 name="date"
                                 placeholder="Date"
-                                value={date}
+                                defaultValue={workout.date}
                                 onChange={(e) => setDate(e.target.value)}/>
                         </Form.Group>
 
                         <Form.Group className='py-2'>
                             <Form.Select
                                 aria-label="Workout Type"
+                                defaultValue={workout.workouttype}
                                 onChange={(e) => setWorkouttype(e.target.value)}>
                                 <option>Workout Type</option>
                                 <option value="bench">Bench</option>
@@ -103,6 +136,7 @@ const CreateWorkout = () => {
                             <Form.Control
                                 type="sets"
                                 placeholder="How many sets did you do?"
+                                defaultValue={workout.sets}
                                 onChange={(e) => setSets(e.target.value)}/>
                         </Form.Group>
 
@@ -110,6 +144,7 @@ const CreateWorkout = () => {
                             <Form.Label>Reps</Form.Label>
                             <Form.Control
                                 type="reps"
+                                defaultValue={workout.reps}
                                 placeholder="How many reps did you do?"
                                 onChange={(e) => setReps(e.target.value)}/>
                         </Form.Group>
@@ -118,6 +153,7 @@ const CreateWorkout = () => {
                             <Form.Label>Weights</Form.Label>
                             <Form.Control
                                 type="weight"
+                                defaultValue={workout.weight}
                                 placeholder="Weight?"
                                 onChange={(e) => setWeight(e.target.value)}/>
                         </Form.Group>
@@ -126,6 +162,7 @@ const CreateWorkout = () => {
                             <Form.Label>Duration</Form.Label>
                             <Form.Control
                                 type="duration"
+                                defaultValue={workout.duration}
                                 placeholder="Duration?"
                                 onChange={(e) => setDuration(e.target.value)}/>
                         </Form.Group>
@@ -134,6 +171,7 @@ const CreateWorkout = () => {
                             <Form.Label>Comments</Form.Label>
                             <Form.Control
                                 as="textarea"
+                                defaultValue={workout.comment}
                                 placeholder="Comments?"
                                 rows={3}
                                 onChange={(e) => setComment(e.target.value)}/>
@@ -149,4 +187,4 @@ const CreateWorkout = () => {
     );
 };
 
-export default CreateWorkout;
+export default UpdateWorkout;
